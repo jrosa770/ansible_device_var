@@ -1,0 +1,85 @@
+system:
+  - device_name: example-sw-01
+    location_domain_name: example.com
+    location: "1 Street Example USA"
+    type: switch
+    hardware: 2900
+    device_os: ios
+    ios_update: no
+    ios_admin:
+      admin_if: 2
+      ipv4: 10.2.2.2
+      mask: 255.255.255.0
+      gw: 10.2.2.254
+
+ Templates
+# == Access ==
+#  - name: interface [Type][module]/[instance]/[port]
+#    vlan: [vlan Number]
+#    if_type: access
+#    channel_group: [number] # IF PART of PORT CHANNEL
+#    current: [modify] # Change | [keep] # leave untouched | [absent] # decommision or delete | [ignore] #Self Explanatory
+
+# == Trunk ==
+#  - name: interface [Type][module]/[instance]/[port]
+#    vlan: [native vlan] or 1
+#    trunk_allowed: '[vlan range]' or all
+#    if_type: trunk
+#    channel_group: [number] # IF PART of PORT CHANNEL
+#    current: [modify] # Change | [keep] # leave untouched | [absent] # decommision or delete | [ignore] #Self Explanatory
+
+interfaces:
+  - name: 'interface GigabitEthernet1/0/1'
+    vlan: 2
+    trunk_allowed: all
+    if_type: trunk
+    current:keep
+
+  - name: 'interface GigabitEthernet1/0/2'
+    vlan: 10
+    if_type: access
+    voip: enabled
+    voip_vlan: 100
+    current: keep
+
+  - name: 'interface GigabitEthernet1/0/3'
+    vlan: 10
+    if_type: access
+    voip: enabled
+    voip_vlan: 100
+    current: keep
+
+  - name: 'interface GigabitEthernet1/0/4'
+    vlan: 10
+    if_type: access
+    voip: enabled
+    voip_vlan: 100
+    current: keep
+
+  - name: 'interface GigabitEthernet1/0/5'
+    vlan: 10
+    if_type: access
+    voip: enabled
+    voip_vlan: 100
+    current: keep
+
+  - name: 'interface GigabitEthernet1/0/6'
+    vlan: 10
+    if_type: access
+    voip: disabled
+    voip_vlan: 100
+    current: keep
+
+  - name: 'interface GigabitEthernet1/0/7'
+    vlan: 20
+    if_type: access
+    voip: enabled
+    voip_vlan: 200
+    current: modify
+
+  - name: 'interface GigabitEthernet1/0/8'
+    vlan: 20
+    if_type: access
+    voip: disabled
+    voip_vlan: 200
+    current: modify

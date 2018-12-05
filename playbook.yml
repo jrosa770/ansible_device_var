@@ -1,0 +1,86 @@
+---
+- hosts: ios
+  gather_facts: yes
+  connection: network_cli
+  become: yes
+  become_method: enable
+  ignore_errors: yes
+
+  tasks:
+  - name: obtain login credentials
+    include: secrets.yml
+
+# This task will call the file example-sw-01.yml
+  - name: obtain hardware vars for {{ inventory_hostname }}
+    include_vars: my_device_files/{{ inventory_hostname }}.yml
+
+# This task will clear the interface configuration if "current" 
+# is set to modify
+  - name: Clear IOS Interface Configuration for {{inventory_hostname}}
+    ios_config:
+      lines:
+        - default {{item.name}}
+      match: none
+      save_when: changed
+    with_items: "{{ interfaces }}"
+    when: item.current == "modify"
+
+# This task will configure a data vlan if "current" 
+# is set to modify
+  - name: IOS Switchport Access Interface Configuration for {{inventory_hostname}}
+    ios_config:
+      lines:
+        - switchport access vlan {{item.vlan}}
+        - switchport mode access
+        - spanning-tree portfast
+      parents: "{{item.name}}"
+      match: none
+      save_when: changed
+    with_items: "{{ interfaces }}"
+    when: (item.current == "modify") and
+          (item.if_type == "access") and
+          (item.voip == "disabled")
+  
+# This task will configure a data and voice vlan if "current" is set to modify
+  - name: IOS Switchport Access with VoIP Interface Configuration for {{inventory_hostname}}
+    ios_config:
+      lines:
+        - switchport access vlan {{item.vlan}}
+        - switchport mode access
+        - switchport voice vlan {{item.voip_vlan}}
+        - spanning-tree bpduguard enable
+        - spanning-tree guard loop
+        - spanning-tree portfast
+      parents: "{{item.name}}"
+      match: none
+      save_when: changed
+    with_items: "{{ interfaces }}"
+    when: (item.current == "modify") and
+          (item.if_type == "access") and
+          (item.voip == "enabled")
+
+
+# This task will configure then interface as a trunk if "current" 
+# is set to modify
+  - name: IOS Switchport Data Only Access Interface Configuration for {{inventory_hostname}}
+    ios_config:
+      lines:
+        - switchport trunk native vlan {{item.vlan}}
+        - switchport trunk allowed vlan {{item.trunk_allowed}}
+        - switchport mode trunk
+      parents: "{{item.name}}"
+      match: none
+      save_when: changed
+    with_items: "{{ interfaces }}"
+    when: (item.current == "modify") and
+          (item.if_type == "trunk")
+
+# This task will set "current" from modify back to keep. 
+# in order to return the section of the file to its original state
+# thus mirroring the new state of the device
+  - name: Change current value fom modify to keep in host variable file
+    replace:
+      path: my_device_files/{{ inventory_hostname }}.yml
+      regexp: 'current: modify'
+      replace: 'current: keep'
+      after: 'interfaces:'
