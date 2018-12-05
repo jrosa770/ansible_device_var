@@ -121,6 +121,11 @@ Now let's see the playbook:
   - name: obtain login credentials
     include: secrets.yml
 
+  - name: Set Username and Password
+    set_fact:
+      remote_user: "{{ creds['username'] }}"
+      ansible_ssh_pass: "{{ creds['password'] }}"
+
 # This task will call the file example-sw-01.yml
   - name: obtain hardware vars for {{ inventory_hostname }}
     include_vars: my_device_files/{{ inventory_hostname }}.yml
