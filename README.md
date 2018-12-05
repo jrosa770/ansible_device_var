@@ -208,4 +208,4 @@ With the example_sw_01.yml, the playbook will produce the following changes:
     1. Clear the configurations of interface GigabitEthernet1/0/7 and interface GigabitEthernet1/0/8
     2. Set interface GigabitEthernet1/0/7 to data 20 and voice 200
     3. Set interface GigabitEthernet1/0/8 to data 20
-    4. Set all current: modify to current: keep in the "example- -01.yml" file
+    4. Set all current: modify to current: keep in the "example-sw-01.yml" file
