@@ -136,7 +136,7 @@ Now let's see the playbook:
     with_items: "{{ interfaces }}"
     when: item.current == "modify"
 
-# This task will configure a data vlan if "current" 
+# This task will configure a data vlan if "current"
 # is set to modify
   - name: IOS Switchport Access Interface Configuration for {{inventory_hostname}}
     ios_config:
@@ -203,9 +203,9 @@ The command to call the playbook and file:
 user@ansible:~$ ansible-playbook playbook.yml -l example-sw-01
 ```
 
-With the example_sw_01.yml, the playbook will produce the following changes:
+With the `example-sw-01.yml`, the playbook will produce the following changes:
 
-    1. Clear the configurations of interface GigabitEthernet1/0/7 and interface GigabitEthernet1/0/8
-    2. Set interface GigabitEthernet1/0/7 to data 20 and voice 200
-    3. Set interface GigabitEthernet1/0/8 to data 20
-    4. Set all current: modify to current: keep in the "example-sw-01.yml" file
+1. Clear the configurations of `interface GigabitEthernet1/0/7` and `interface GigabitEthernet1/0/8`
+2. Set `interface GigabitEthernet1/0/7` to data `20` and voice `200`
+3. Set `interface GigabitEthernet1/0/8` to data `20`
+4. Set all `current: modify` to `current: keep` in the **example-sw-01.yml** file
